@@ -1,14 +1,13 @@
 package main
 
-package main
 import (
-	"container/heap"
+
 )
 
 type MinHeap []Node
 
 type Node struct {
-	v int  
+	v string  
     dist int
 }
 
@@ -30,3 +29,4 @@ func (h *MinHeap) Pop() interface{} {
 	*h = old[0 : n-1]
 	return x
 }
+
