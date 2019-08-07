@@ -3,19 +3,29 @@ package main
 import (
 	"net/http"
 	"os"
+	"log"
 
-	"github.com/go-kit/kit/log"
+	lg "github.com/go-kit/kit/log"
 	httptransport "github.com/go-kit/kit/transport/http"
 )
 
 func main() {
-	logger := log.NewLogfmtLogger(os.Stderr)
+	logger := lg.NewLogfmtLogger(os.Stderr)
 
 	var svc SmrtService
 
-	store := NewStorage() 
-	graph := NewGraph()
-	svc = smrtService{store,graph}
+	db, err := CreateConnection()
+	defer db.Close()
+
+	if err != nil {
+		log.Printf("Could not connect to DB: %+v", err)
+	}
+
+	InitDb(db)
+
+	store := NewStorage(db) 
+	newSearchEngine := NewSearchEngine()
+	svc = smrtService{store,newSearchEngine}
 	svc = loggingMiddleware{logger, svc}
 
 	addLineHandler := httptransport.NewServer(

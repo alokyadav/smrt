@@ -22,8 +22,11 @@ func makeAddLineEndpoint(svc SmrtService) endpoint.Endpoint {
 func makeSearchPathEndpoint(svc SmrtService) endpoint.Endpoint {
 	return func(_ context.Context, request interface{}) (interface{}, error) {
 		req := request.(searchPathRequest)
-		v := svc.SearchPath(req.Src,req.Dest,req.Criteria)
-		return searchPathResponse{v}, nil
+		v,err := svc.SearchPath(req.Src,req.Dest,req.Criteria)
+		if err != nil {
+			return searchPathResponse{nil, err.Error()}, nil
+		}
+		return searchPathResponse{v,""}, nil
 	}
 }
 
@@ -63,5 +66,6 @@ type searchPathRequest struct {
 }
 
 type searchPathResponse struct {
-	Path []string `json:"path"`
+	Path [][]string `json:"path"`
+	Err  string    `json:"err,omitempty"`
 }
