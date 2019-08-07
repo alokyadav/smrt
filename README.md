@@ -9,13 +9,14 @@ Design SMRT system as a web application where you need to support two APIs:
 ```bash
 git clone https://github.com/alokyadav/smrt.git
 
+docker-compose up db
+
+#Open new tab
+
 docker-compose build smrt-service
 
 docker-compose up smrt-service
 
-#Open new tab
-
-docker-compose up db
 
 ```
 
