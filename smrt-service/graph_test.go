@@ -7,6 +7,7 @@ import (
 	
 )
 
+
 func TestShortestPathLeastTime(t *testing.T) {
 	line1 := []*TimeRecord{{Start : "1" , End : "2", Time: 2, LineID : "1"}, {Start : "2" , End : "3", Time: 2, LineID : "1"}, {Start : "3" , End : "4", Time: 2, LineID : "1"}}
 

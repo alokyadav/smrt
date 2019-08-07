@@ -26,6 +26,7 @@ func main() {
 	store := NewStorage(db) 
 	newSearchEngine := NewSearchEngine()
 	svc = smrtService{store,newSearchEngine}
+	svc.Init()
 	svc = loggingMiddleware{logger, svc}
 
 	addLineHandler := httptransport.NewServer(

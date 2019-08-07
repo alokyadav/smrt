@@ -1,4 +1,28 @@
 # SMRT Service
+Design SMRT system as a web application where you need to support two APIs:
+* As admin, I should be able to add line with unique line-id and stations on that line with unique station-id along with travel time between each station on line.
+* As user, I should be able to search optimal path between source and destination stations with one of the below optimality criteria - quickest travel time, least line switches, least number of stations
+
+
+
+## How To Run This Project
+```bash
+git clone https://github.com/alokyadav/smrt.git
+
+docker-compose build smrt-service
+
+docker-compose up smrt-service
+
+#Open new tab
+
+docker-compose up db
+
+```
+
+## Note
+* Install docker
+* Install docker compose
+
 
 ## API end points:
 
@@ -65,6 +89,9 @@ Success Response = {
 }
 ```
 
+
+## Future Improvement
+*
 
 
 

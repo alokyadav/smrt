@@ -48,3 +48,13 @@ func (mw loggingMiddleware) SearchPath(src, dest, criteria string) (paths [][]st
 	paths,err = mw.next.SearchPath(src,dest,criteria)
 	return
 }
+
+//SearchPath - wrap and implement logging for SearchPath
+func (mw loggingMiddleware) Init() {
+	defer func(begin time.Time) {
+		_ = mw.logger.Log(
+			"method", "Init",
+		)
+	}(time.Now())
+	return
+}

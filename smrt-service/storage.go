@@ -62,7 +62,6 @@ func (s *Storage) StoreStation(stations []*Station) {
 		var st Station
 		s.db.Where(&Station{ID : station.ID}).First(&st)
 		if strings.Compare(st.ID,station.ID) != 0 {
-			log.Printf("Inserted")
 			s.db.Create(station)
 		}
 	}
@@ -92,6 +91,7 @@ func (s *Storage) GetNumberOfStations() int {
 	return len(stations)
 }
 
+//This method check if Station is present
 func (s *Storage)IsStationPresent(stationID string) bool {
 	var station Station
 	s.db.Where(&Station{ID : stationID}).First(&station)
@@ -101,10 +101,57 @@ func (s *Storage)IsStationPresent(stationID string) bool {
 	return false
 }
 
+func (s *Storage) getAllLines() []*Line {
+	var lineRecords []LineRecord
+	lines := []*Line{}
+	s.db.Find(&lineRecords)
+
+	log.Printf("line %+v", lineRecords)
+	for _,lineRecord := range lineRecords {
+		rows, err := s.db.Raw(`select time_records.start, 
+							  time_records.end,
+							  time_records.time,
+							  time_records.hop_number from time_records 
+                              where line_id = ? 
+							  order by time_records.hop_number asc`,lineRecord.ID).
+							Rows()
+		if err != nil {
+			log.Printf("line %+v", err)
+			return nil
+		}
+	
+		defer rows.Close()
+		stations := []*Station{}
+		Times := []int{}
+		var st string
+		var end string
+		var t int
+		var hop int
+		for rows.Next() {
+			rows.Scan(&st,&end,&t,&hop)
+			stations = append(stations,&Station{ID:st})
+			Times = append(Times,t)
+		}
+		stations = append(stations,&Station{ID:end})
+		line := new(Line)
+		line.ID = lineRecord.ID
+		line.Name = lineRecord.Name
+		line.Stations = stations
+		line.Times = Times
+		lines = append(lines, line)
+	}
+	return lines
+}
+
+func (s *Storage) getAllTimeRecords() []*TimeRecord {
+	var timeRecords []*TimeRecord
+	s.db.Find(&timeRecords)
+    log.Printf("len %+v",len(timeRecords))
+	return timeRecords
+}
 
 //CreateConnection -  Create connection to mysql Server
 func CreateConnection() (*gorm.DB, error) {
-
 	host := os.Getenv("DB_HOST")
 	user := os.Getenv("DB_USER")
 	DBName := os.Getenv("DB_NAME")
@@ -117,17 +164,22 @@ func CreateConnection() (*gorm.DB, error) {
 
 //Initdb - this methow will drop the table and create new ones
 func InitDb(db *gorm.DB) {
-	db.Debug().DropTableIfExists(&Station{}) 
+	//db.Debug().DropTableIfExists(&Station{}) 
 	//Drops table if already exists
-	db.Debug().AutoMigrate(&Station{}) 
+	if !db.HasTable(&Station{}) {
+		db.Debug().AutoMigrate(&Station{}) 
+	}
 
-	db.Debug().DropTableIfExists(&TimeRecord{}) 
 	//Drops table if already exists
-	db.Debug().AutoMigrate(&TimeRecord{}) 
+	if !db.HasTable(&TimeRecord{}) {
+		db.Debug().AutoMigrate(&TimeRecord{})
+	} 
 
-	db.Debug().DropTableIfExists(&LineRecord{}) 
+	
 	//Drops table if already exists
-	db.Debug().AutoMigrate(&LineRecord{}) 
+	if !db.HasTable(&LineRecord{}) {
+		db.Debug().AutoMigrate(&LineRecord{}) 
+	}
 }
 
 var ErrLinePresent = errors.New("line already present")

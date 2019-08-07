@@ -3,12 +3,14 @@ package main
 import (
 	"errors"
 	"fmt"
+	"log"
 )
 
 //SmrtService provides operations on strings.
 type SmrtService interface {
 	AddLine(*Line) error
 	SearchPath(src, dest, criteria string) ([][]string,error)
+	Init()
 }
 
 type smrtService struct{
@@ -36,6 +38,9 @@ func (svc smrtService)AddLine(line *Line) error {
 	svc.searchEngine.graph.AddEdges(timeRecs)
 	svc.searchEngine.graph.SetNumberOfVertex(svc.store.GetNumberOfStations())
 	svc.searchEngine.lineGraph.AddVertex(line)
+
+	lines := svc.store.getAllTimeRecords()
+    log.Printf("len %d", len(lines))
 	return nil
 }
 
@@ -52,6 +57,16 @@ func (svc smrtService) SearchPath(src, dest, criteria string) ([][]string,error)
 	}
 	paths,err := svc.searchEngine.SearhPath(src,dest,criteria)
 	return paths,err
+}
+
+func (svc smrtService) Init() {
+	lines := svc.store.getAllLines()
+	for _,line := range lines {
+		svc.searchEngine.lineGraph.AddVertex(line)
+	} 
+	timeRecords := svc.store.getAllTimeRecords()
+	svc.searchEngine.graph.AddEdges(timeRecords)
+
 }
 
 // ErrEmpty is returned when an input string is empty.
