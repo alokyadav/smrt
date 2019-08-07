@@ -8,7 +8,7 @@ type Line struct {
 	ID 			string 			`json:"id"`
 	Name		string   		`json:"name"` 
 	Stations   []*Station  		`json:"stations"`
-	Times  []int      		    `json:"distances"` 
+	Times  []int      		    `json:"times"` 
 }
 
 func (l Line) Validate() error {
