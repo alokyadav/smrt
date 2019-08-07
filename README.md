@@ -82,7 +82,7 @@ Method = POST
 RequestBody = {
     "source": "1",
     "destination": "11",
-    "criteria": "LEAST_TIME"
+    "criteria": "LEAST_TIME" #Possible values - LEAST_TIME, LEAST_SWITCH and LEAST_STATION_NUMBER
 }
 
 Success Response = {
