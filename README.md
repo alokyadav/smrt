@@ -1,10 +1,11 @@
 # SMRT Service
 
+## API end points:
 
-## API end points:**
-
-### Add Line *localhost:8080/addline*
+### Add Line 
 To add a new line to system 
+*localhost:8080/addline*
+
 ```
 Method = POST
 RequestBody
