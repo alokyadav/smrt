@@ -1,12 +1,14 @@
-#SMRT Service
+# SMRT Service
 
-**API end points:**
 
-##Add Line *localhost:8080/addline*
+## API end points:**
+
+### Add Line *localhost:8080/addline*
 To add a new line to system 
-
+```
 Method = POST
-RequestBody = {
+RequestBody
+{
     "line": {
         "id": "3",
         "name": "R",
@@ -45,9 +47,11 @@ ErrorResponse = {
     "v":"",
     "err": "Error Message"
 }
+```
 
-##Search Between *localhost:8080/searhpath*
+### Search Between *localhost:8080/searhpath*
 
+```
 Method = POST
 RequestBody = {
     "source": "1",
@@ -58,6 +62,7 @@ RequestBody = {
 Success Response = {
     "path" : Array of paths
 }
+```
 
 
 
