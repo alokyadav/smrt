@@ -187,8 +187,7 @@ func (g *Graph) ShortestPathLeastStation(src,dest string) ([][]string,error)  {
 
 //LineGraph graph data structure will be used to implement minimum switch search 
 // Vertex is each line item and there is edge between two vertex if they are crossing each other with
-// weigh = 1
-
+// weight = 1
 
 type LineGraph struct {
 	V  int  	// Number of vertex
@@ -261,6 +260,10 @@ func (lg *LineGraph) AddEdge(srcLine, destLine, interSection string) {
 func (g *LineGraph) ShortestPathLeastSwitch(src,dest string) ([][]string,error) {
 	srcs := []string{}
 	dests := []string{}
+
+	//Get all starting line vertex and destination line vertex
+	// all line vertex which contain src station are starting point and similarly all line vertex containing dest are destination
+	// vertex in search
 	for line,vertex := range g.Vertices {
 		if IsPresentInLine(src,vertex.StationSet) {
 			srcs = append(srcs,line)
@@ -270,6 +273,18 @@ func (g *LineGraph) ShortestPathLeastSwitch(src,dest string) ([][]string,error) 
 		}
 	}
 	paths := [][]string{}
+
+	//Check if src and dest lie on same line
+	lineID,ok := checkOverlap(srcs,dests)
+	
+	if ok {
+		onP := g.getPathFromLines(src,dest,[]string{lineID})
+		paths := append(paths,onP)
+		return paths,nil
+	}
+
+	//get minimum switch path for all start vertex to end vertex
+	
 	for _,lineID := range srcs {
 		parents := g.ShortestPathLeastSwitchHelper(lineID)
 		
@@ -283,6 +298,7 @@ func (g *LineGraph) ShortestPathLeastSwitch(src,dest string) ([][]string,error) 
 	if len(paths) == 0 {
 		return nil,NoPathPresent
 	}
+	//get shortest path
 	sortestPaths := [][]string{}
 	lenMax := MaxInt
 	for _, path := range paths {
@@ -297,6 +313,7 @@ func (g *LineGraph) ShortestPathLeastSwitch(src,dest string) ([][]string,error) 
 	}
 	paths = [][]string{}
 
+	// get station path from line paths
     for _,shortestPath := range sortestPaths {
 		onP := g.getPathFromLines(src,dest,shortestPath)
 		paths = append(paths,onP)
@@ -306,13 +323,14 @@ func (g *LineGraph) ShortestPathLeastSwitch(src,dest string) ([][]string,error) 
 }
 
 
-//This method will create path 
+//This method will create path from line vertex
 func (g *LineGraph)getPathFromLines(src, dest string, linePath []string) []string {
 
 	paths := []string{}
 	i := 0
 	start := src
 	end := ""
+
 	for i < len(linePath)-1 {
 		adj := g.LineAdjList[linePath[i]]
 		for _,node := range adj {
