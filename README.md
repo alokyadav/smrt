@@ -92,7 +92,6 @@ Success Response = {
 
 
 ## Future Improvement
-*
-
-
+* Use external Cache (Redis etc ) to store the searh data structures .
+* Separate out both apis into two independent service as search api will have more call as compare to add line.
 
