@@ -36,16 +36,16 @@ Method = POST
 RequestBody
 {
     "line": {
-        "id": "3",
-        "name": "R",
+        "id": "3", #string
+        "name": "R", # strig 
         "stations": [
             {
-                "id": "8",
-                "name": "queenstown"
+                "id": "8", #string
+                "name": "queenstown" # string
             },
             {
-                "id": "2",
-                "name": "vista"
+                "id": "2", #string
+                "name": "vista" #string
             },
             {
                 "id": "6",
@@ -80,13 +80,13 @@ ErrorResponse = {
 ```
 Method = POST
 RequestBody = {
-    "source": "1",
-    "destination": "11",
+    "source": "1", #string
+    "destination": "11", #string
     "criteria": "LEAST_TIME" #Possible values - LEAST_TIME, LEAST_SWITCH and LEAST_STATION_NUMBER
 }
 
 Success Response = {
-    "path" : Array of paths
+    "path" : Array of paths containing station ids
 }
 ```
 
